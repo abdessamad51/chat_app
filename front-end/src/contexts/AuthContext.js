@@ -1,34 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Pusher from "pusher-js";
-import Echo from "laravel-echo";
+;
 
 
 const AuthContext = createContext({});
 
-// const connectToPusher = async (token) => {
- 
-//   window.Echo = new Echo({
-//     broadcaster: "pusher",
-//     key: "9f0e4582c5ef80603463",
-//     cluster: "ap1",
-//     encrypted: true,
-//     // authEndpoint: 'http://localhost:8000/broadcasting/auth',
-//     auth: {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     },
-//   });
-//   alert('ss')
-//   // localStorage.setItem("Echo", JSON.stringify(Echo));
-//   return true;
-// }
 export const AuthProvider = ({children}) => {
 
     const [user,setUser] = useState();
-    // const user = 
+    // const  valueshowingConversation = {}
     useEffect(() => {
       setUser(JSON.parse(localStorage.getItem("user")));
     },[])

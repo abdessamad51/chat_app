@@ -1,19 +1,42 @@
-import React from "react";
-import useAuthContext from "../contexts/AuthContext";
-import profile from "../assets/images/7.png";
+import React, { useEffect, useState } from "react";
+import useAuthContext from "../../contexts/AuthContext";
+import useConversationContext from "../../contexts/ConversationContext";
+import profile from "../../assets/images/7.png";
+import { Link } from "react-router-dom";
 
-const Aside = ({AsideData}) => {
-    const  {GetConversation,ShowConversation,content} = AsideData;
+const Aside = ({content}) => {
     const {user} = useAuthContext();
-    
-    const {conversations,getData} = GetConversation();
+    const {setConversationData,GetConversation,FriendsData} = useConversationContext();
+    const [conversations, setConversations] = useState(null);
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const result =
+            content == "chats"
+              ? await GetConversation(user)
+              : await FriendsData(user);
+          setConversations(result);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    }, [GetConversation]);
+
+    const handleClick = (e,conversation_id,conversation_name) => {
+        e.preventDefault();
+        setConversationData({
+            conversation_id,
+            conversation_name
+        })
+    }
     return (
         <div className="sidebar bg-light" id="sidebar" >
             <div className="fade h-100 tab-pane show active">
                 <div className="d-flex flex-column h-100 position-relative">
                     <div className="hide-scrollbar">
                         <div className="container py-8">
-                            <div className="mb-8">
+                            <div className="mb-8">  
                                 <h2 className="fw-bold m-0">{content}</h2>
                             </div>
                             <div className="mb-6">
@@ -33,9 +56,9 @@ const Aside = ({AsideData}) => {
                             content !== 'friends' 
                             ?
                             <div className="card-list chat">
-                            {  getData && conversations.map((conversation) => (
-                                <a onClick={(e) =>  ShowConversation(e,conversation.conversation_id,conversation['participant'].full_name,user)} className="card border-0 text-reset">
-                                    <div className="card-body">
+                            {  conversations && conversations.map((conversation) => (
+                                <Link onClick={(e) => handleClick(e,conversation.conversation_id,conversation['participant'].full_name) } className="card border-0 text-reset" key={conversation.conversation_id}>
+                                    <div className="card-body" >
                                         <div className="row gx-5">
                                             <div className="col-auto">
                                                 <div className="avatar avatar-online">
@@ -61,19 +84,19 @@ const Aside = ({AsideData}) => {
                                             </div>
                                         </div>
                                     </div>
-                                </a>
+                                </Link>
                                 ))
                             }
                             </div> 
                             :
                             <div className="card-list friends">
-                            {  getData && conversations.map((friend) => (
-                                <a href="#" onClick={(e) =>  ShowConversation(e,friend.conversation_id,friend['participant'].full_name,user,content)} className="card border-0 text-reset">
+                            {  conversations && conversations.map((friend) => (
+                                <Link href="#" onClick={(e) => handleClick(e,friend.conversation_id,friend['participant'].full_name) } key={friend.id} className="card border-0 text-reset" key={friend.conversation_id}>
                                     <div className="card-body">
                                         <div className="row gx-5">
                                             <div className="col-auto">
                                                 <div className="avatar avatar-online">
-                                                    <img src="assets/img/avatars/7.jpg" alt="#" className="avatar-img"/>
+                                                    <img src={profile} alt="#" className="avatar-img"/>
                                                 </div>
                                             </div>
 
@@ -85,13 +108,11 @@ const Aside = ({AsideData}) => {
                                             </div>
                                         </div>
                                     </div>
-                                </a>
+                                </Link>
                                 ))
                             }
                             </div> 
                            }
-                          
-                           
                         </div>
                     </div>
                 </div>

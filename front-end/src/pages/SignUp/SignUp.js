@@ -5,9 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
-// import  useAuthContext  from "../services/AuthService";
+
 const SingUp = () => {
-    // const {login} = useAuthContext();
 
     const notify = (message) => {
       toast.error(message, {
