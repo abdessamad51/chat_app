@@ -13,7 +13,6 @@ const Content = () => {
   const {conversation_id,conversation_name} = conversationData;
   const [replay, setReplay] = useState('');
   const containeur = useRef()
-
   useEffect(() => {
     containeur.current.scrollTop = containeur.current.scrollHeight;
   },[conversationData,messagesConversation]);
@@ -31,6 +30,7 @@ const Content = () => {
   }, [conversationData]);
 
   useEffect(() => {
+
     const Echo =  connectToPusher(user);
     // Subscribe to the private channel
     Echo.private(`chat.${user.user_id}`).listen(".message", (event) => {
@@ -59,13 +59,20 @@ const Content = () => {
     setMessagesConversation((messagesConversation) =>[...messagesConversation,data]);
   };
 
+  const handleKeyPress = async (e) => {
+    e.preventDefault();
+    if (e.key === 'Enter') {
+        alert('dd');
+    }
+  }
+
   return (
     <div className="container h-100">
       <div className="d-flex flex-column h-100 position-relative">
       
         <ConversationHeader conversation_name={conversation_name} />
         <ConversationBody containeur = {containeur} messagesConversation={messagesConversation} getTime={getTime}/>
-        <ConversationFooter handleSendMessages={handleSendMessages} handleChange={handleChange} replay={replay} />
+        <ConversationFooter handleSendMessages={handleSendMessages} handleChange={handleChange} replay={replay} handleKeyPress={handleKeyPress}/>
       </div>
     </div>
   );

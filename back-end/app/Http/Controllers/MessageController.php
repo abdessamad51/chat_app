@@ -107,7 +107,16 @@ class MessageController extends Controller
     private function getReceiverMessageUser($message) 
     {
         $conversation = $message->conversation;
-        $receiver_user_id = ConversationParticipant::where('conversation_id',$conversation->id)->with('participant:id')->whereHas('participant')->first(['id','conversation_id','user_id'])['participant']['id'];
+        $receiver_user_id = ConversationParticipant::where('conversation_id',$conversation->id)->with('participant:id')->whereHas('participant')->first(['id','conversation_id','participant_id'])['participant']['id'];
         return $receiver_user_id;
+    }
+
+    public function lastMessage($conversation_id)  
+    {
+        $lastMessage = Message::where('conversation_id',$conversation_id)
+                    ->orderBy('created_at','DESC')
+                    ->pluck('message')
+                    ->first();
+        return $lastMessage;
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -54,6 +55,10 @@ class User extends Authenticatable
     }
 
     public function conversationsParticipants() {
-        return $this->hasMany(ConversationParticipant::class,'user_id','id');
+        return $this->hasMany(ConversationParticipant::class,'participant_id','id');
+    }
+
+    public function invitationStatus() {
+        return $this->hasMany(Invitation::class,'receiver_id')->where('sender_id',Auth::user()->id);
     }
  }

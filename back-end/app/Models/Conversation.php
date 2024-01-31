@@ -22,4 +22,8 @@ class Conversation extends Model
         return $this->hasMany(Message::class)->orderBy('created_at','ASC');;
     }
 
+    public function lastMessage() {
+        return $this->hasMany(Message::class,'conversation_id','id')->orderBy('created_at','DESC')->limit(1);
+    }
+
 }

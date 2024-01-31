@@ -12,7 +12,8 @@ class Message extends Model
     protected $fillable = [
         'user_id',
         'conversation_id',
-        'message'
+        'message',
+        'created_at'
     ];
 
     public function  conversation() {

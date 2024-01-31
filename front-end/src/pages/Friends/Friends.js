@@ -7,11 +7,11 @@ import { ConversationProvider } from '../../contexts/ConversationContext.js';
 const Friends = () => {
     return (
         <div className="App layout overflow-hidden">
-         <Master />
-         <ConversationProvider>
+          <Master />
+          <ConversationProvider>
             <Aside  content = 'friends'/>  
             <Main /> 
-         </ConversationProvider>  
+          </ConversationProvider>  
        </div> 
     );
 };

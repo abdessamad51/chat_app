@@ -16,7 +16,7 @@ const ConversationBody = ({containeur,messagesConversation,getTime}) => {
               >
                 <img
                   className="avatar-img"
-                  src="assets/img/avatars/1.jpg"
+                //   src="assets/img/avatars/1.jpg"
                   alt=""
                 />
               </a>
@@ -168,7 +168,7 @@ const ConversationBody = ({containeur,messagesConversation,getTime}) => {
               >
                 <img
                   className="avatar-img"
-                  src="assets/img/avatars/2.jpg"
+                //   src="assets/img/avatars/2.jpg"
                   alt=""
                 />
               </a>

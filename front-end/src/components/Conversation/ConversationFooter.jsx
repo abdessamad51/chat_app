@@ -1,6 +1,6 @@
 
 import React from "react";
-const ConversationFooter = ({handleSendMessages,handleChange,replay}) => {
+const ConversationFooter = ({handleSendMessages,handleChange,replay,handleKeyPress}) => {
   return (
     <div className="chat-footer pb-3 pb-lg-7 position-absolute bottom-0 start-0">
     <div
@@ -54,7 +54,9 @@ const ConversationFooter = ({handleSendMessages,handleChange,replay}) => {
                 resize: "none",
                 height: "47px",
               }}
+              // onKeyDown={(e) => handleKeyPress(e)}
               onChange={(e) => handleChange(e)}
+             
             ></textarea>
 
             <a

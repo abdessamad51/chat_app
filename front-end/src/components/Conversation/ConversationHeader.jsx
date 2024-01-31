@@ -32,7 +32,7 @@ const ConversationHeader = ({conversation_name}) => {
                   <div className="avatar avatar-online d-none d-xl-inline-block">
                     <img
                       className="avatar-img"
-                      src="assets/img/avatars/2.jpg"
+                      // src="assets/img/avatars/2.jpg"
                       alt=""
                     />
                   </div>
@@ -57,9 +57,9 @@ const ConversationHeader = ({conversation_name}) => {
                   <a
                     href="#"
                     className="icon icon-lg text-muted"
-                    data-bs-tFoggle="offcanvas"
-                    data-bs-target="#offcanvas-more"
-                    aria-controls="offcanvas-more"
+                    // data-bs-tFoggle="offcanvas"
+                    // data-bs-target="#offcanvas-more"
+                    // aria-controls="offcanvas-more"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

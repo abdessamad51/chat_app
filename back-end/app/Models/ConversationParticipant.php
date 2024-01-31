@@ -11,9 +11,17 @@ class ConversationParticipant extends Model
 {
     use HasFactory,SoftDeletes;
     protected $table = "conversation_participant";
-
+    protected $fillable = [
+        'participant_id',
+        'conversation_id'
+    ];
 
     public function participant() {
-        return $this->belongsTo(User::class,'user_id')->where('id','!=',Auth::user()->id);
+        return $this->belongsTo(User::class,'participant_id')->where('id','!=',Auth::user()->id);
+    }
+    
+    public function conversation()
+    {
+        return $this->belongsTo(Conversation::class,'conversation_id');
     }
 }

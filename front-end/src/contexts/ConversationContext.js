@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Pusher from "pusher-js";
 import Echo from "laravel-echo";
-
+import { toast } from "react-toastify";
 const ConversationContext = createContext({});
 
 export const ConversationProvider = ({children}) => {
@@ -10,6 +10,18 @@ export const ConversationProvider = ({children}) => {
   // const [showingConversation, setShowingConversation] = useState(false);
   const [conversationData, setConversationData] = useState(null);
   
+  const notify = (message) => {
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
   const sendMessage = async (conversation_id,message,user) => {
 
       const res = await axios.post(
@@ -59,6 +71,7 @@ export const ConversationProvider = ({children}) => {
       });
   }
   
+  
   const GetConversation = async (user) => {
     const data = await axios.get("http://localhost:8000/api/conversations/", {
       headers: {
@@ -79,8 +92,74 @@ export const ConversationProvider = ({children}) => {
     return data.data;
   }
 
+  const getUsers = async (user,search_name) => {
+    const data = await axios.get(`http://localhost:8000/api/getUsers/${search_name}`,{
+      headers : {
+       Authorization: `Bearer ${user.token}` // Include the token in the request headers
+      }
+    })
+
+    return data.data;
+  }
+  
+  const getChats = async (user,search_name) => {
+    const data = await axios.get(`http://localhost:8000/api/getChats/${search_name}`,{
+      headers : {
+       Authorization: `Bearer ${user.token}` // Include the token in the request headers
+      }
+    })
+
+    return data.data;
+  }
+  const sendInvitation = async (user,receiver_id) => {
+    const data = await axios.get(`http://localhost:8000/api/sendInvitation/${receiver_id}`,
+    {
+      headers : {
+       Authorization: `Bearer ${user.token}` // Include the token in the request headers
+      }
+    })
+
+    return data.data;
+  }
+
+  const lastMessage = async (user,conversation_id) => {
+    const data = await axios.get(`http://localhost:8000/api/conversations/${conversation_id}/lastMessage`,{
+      headers : {
+       Authorization: `Bearer ${user.token}` // Include the token in the request headers
+      }
+    })
+
+    return data.data;
+  }
+
+  const notifaction = async (user) => {
+    const data = await axios.get(`http://localhost:8000/api/notifications`,{
+      headers : {
+       Authorization: `Bearer ${user.token}` // Include the token in the request headers
+      }
+    })
+
+    return data.data;
+  }
+
+  const acceptInvitation = async (user,notifaction_id) => {
+    // return notifaction_id;
+    notify("accepte your friend request")
+    const res = await axios.get(
+      `http://localhost:8000/api/acceptInvitation/${notifaction_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}` // Include the token in the request headers
+        },
+      }
+    );
+    console.log(res)
+
+    return res;  
+    // return data.data;
+  }
   return (
-    <ConversationContext.Provider value={{showConversation,conversationData, setConversationData,sendMessage,GetConversation,FriendsData,connectToPusher}}>
+    <ConversationContext.Provider value={{showConversation,conversationData, setConversationData,sendMessage,GetConversation,FriendsData,connectToPusher,getUsers,sendInvitation,lastMessage,notifaction,acceptInvitation,getChats}}>
       {children}
     </ConversationContext.Provider>
   );
