@@ -54,11 +54,15 @@ class User extends Authenticatable
         return $this->belongsToMany(Conversation::class,'conversation_participant');
     }
 
-    public function conversationsParticipants() {
-        return $this->hasMany(ConversationParticipant::class,'participant_id','id');
+    public function conversationsParticipantsHasMessages() {
+        return $this->hasMany(ConversationParticipant::class,'participant_id','id')->whereHas('messages');
     }
 
     public function invitationStatus() {
         return $this->hasMany(Invitation::class,'receiver_id')->where('sender_id',Auth::user()->id);
     }
+    public function conversationsParticipants() {
+        return $this->hasMany(ConversationParticipant::class,'participant_id','id');
+    }
+
  }

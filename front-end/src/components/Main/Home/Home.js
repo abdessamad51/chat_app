@@ -1,9 +1,9 @@
 import React from "react";
 
-const Accuiel = () => { 
+const Home = () => { 
    return (
      <div className="container h-100 bg-light">
-       <div className="d-flex flex-column h-100 justify-content-center text-center">
+        <div className="d-flex flex-column h-100 justify-content-center text-center">
          <div className="mb-6">
            <span className="icon icon-xl text-muted">
              <svg
@@ -31,4 +31,4 @@ const Accuiel = () => {
 
 }
 
-export default Accuiel;
+export default Home;

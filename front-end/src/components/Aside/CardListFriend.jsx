@@ -4,10 +4,12 @@ import profile from "../../assets/images/7.png";
 import addUser from "../../assets/images/addUser.svg";
 import waitUser from "../../assets/images/waitUser.svg";
 import refuseUser from "../../assets/images/refuseUser.svg";
-const CardListFriend = ({friends,handleClick,handleSendingInvitation,image}) => {
+const CardListFriend = ({friends,handleClick,handleSendingInvitation,loading}) => {
+    console.log(loading)
+    console.log(friends)
     return (
         <div className="card-list friends">
-        {  friends && friends.map((friend) => (
+        {  loading && friends.map((friend) => (
             friend.is_friend ?
             <Link href="#" onClick={(e) => handleClick(e,friend.conversation_id,friend['participant'].full_name) } key={friend.id} className="card border-0 text-reset" >
                 <div className="card-body">

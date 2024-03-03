@@ -23,18 +23,17 @@ class ConversationController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $conversation_has_message = Message::pluck('conversation_id');
-        $conversation_ids = ConversationParticipant::where('participant_id',$user->id)
-                            ->whereIn('conversation_id',$conversation_has_message)
-                            ->pluck('conversation_id');
-
-        $conversation_participant = ConversationParticipant::whereIn('conversation_id',$conversation_ids)
-                                    ->with(['participant:id,full_name','conversation:id,name','conversation.lastMessage:message,conversation_id'])
+        $user = Auth::user();        
+        // get conversation participant
+        $conversation_has_message = $user->conversationsParticipantsHasMessages()->pluck('conversation_id');
+                                                     
+        $conversation_participant = ConversationParticipant::whereIn('conversation_id',$conversation_has_message)
+                                    ->withAggregate('participant','full_name')
+                                    // ->withAggregate('lastMessage','message')
+                                    ->with('lastMessage:message,conversation_id')
                                     ->whereHas('participant')
                                     ->get(['id','participant_id','conversation_id']);
         
-
         return $conversation_participant;
        
     }
@@ -245,6 +244,25 @@ class ConversationController extends Controller
             $receiver = User::find($notification['data']['sender_id']);
             $notification->markAsRead();
             $receiver->notify(new NewInvitationNotification('information','accepted your friend request.'));
+            DB::commit();
+            return response()->json($receiver, 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json($th->getMessage(), 402);
+        } 
+
+    }
+
+    public function refuseInvitation($notification_id) {
+
+        try {
+            $auth = Auth::user();
+            $notification = $auth->notifications()->where('id', $notification_id)->first();
+
+            Invitation::where(['sender_id' =>  $notification['data']['sender_id'],'receiver_id' => $auth->id])->update(['status' => 'refused']);
+            $notification->markAsRead();
+            $receiver = User::find($notification['data']['sender_id']);
+            $receiver->notify(new NewInvitationNotification('information','refused yout friend request'));
             DB::commit();
             return response()->json($receiver, 200);
         } catch (\Throwable $th) {

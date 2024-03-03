@@ -1,14 +1,14 @@
 import React from "react";
-import Accuiel from "../Accueil/Accueil";
+import Home from "./Home/Home";
 import { FaArrowRightLong } from "react-icons/fa6";
-import Conversation from "../Conversation/Conversation";
-import useConversationContext from "../../contexts/ConversationContext";
+import Conversation from "./Conversation/Conversation";
+import { useSelector } from "react-redux";
 
 const Main = () => { 
-  const {conversationData} = useConversationContext();
+   const conversationIn = useSelector(state => state.chat.conversationIn)
    return (
     <main className="main" id="main"> 
-      { conversationData ? <Conversation /> : <Accuiel/> }
+      {conversationIn.conversation_id ? <Conversation /> : <Home/> }
     </main>
    );
 

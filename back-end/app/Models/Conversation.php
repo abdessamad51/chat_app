@@ -5,13 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Conversation extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $hidden = [
-        'pivot'
+        'pivot',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     protected $fillable = [
@@ -23,7 +27,12 @@ class Conversation extends Model
     }
 
     public function lastMessage() {
-        return $this->hasMany(Message::class,'conversation_id','id')->orderBy('created_at','DESC')->limit(1);
+        return $this->hasOne(Message::class,'conversation_id')->orderBy('created_at','DESC')->limit(1);
+    }
+
+    public function participant1()
+    {
+        return $this->hasOne(ConversationParticipant::class,'conversation_id')->where('participant_id','!=',Auth::user()->id)->with('participant:id,full_name');
     }
 
 }

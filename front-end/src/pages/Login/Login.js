@@ -1,23 +1,30 @@
-import React from "react";
-import LoginBody from "../../components/LoginBody/LoginBody.js";
-import useAuthContext from "../../contexts/AuthContext";
+import React, { useEffect } from "react";
+import LoginBody from "./LoginBody";
 import {useNavigate } from "react-router-dom";
+import { login1 } from "../../redux/apis/userApi";
+import {useDispatch, useSelector} from 'react-redux'
 const Login =  () => {
-  const {login,user} = useAuthContext();
   const navigate = useNavigate();
+  const disptach = useDispatch();
+  const userData = useSelector(state => state.auth.user)
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const email = e.target.elements.email.value;
-    const password = e.target.elements.password.value;
-    const loginSuccess = await login(email,password)
-    // login(email,password);
-    if(loginSuccess) 
+   
+  useEffect(() => {
+    if(userData.token)
     {
       navigate('/')
     }
-    
+  },[userData])
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const user = {
+      email : e.target.elements.email.value,
+      password : e.target.elements.password.value
+    }
+    const loginSuccess = await login1(user,disptach)    
   }
+
+
     return (
       <LoginBody handleLogin={handleLogin}/>
     );

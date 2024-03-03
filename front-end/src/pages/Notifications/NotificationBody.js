@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
-import useAuthContext from "../../contexts/AuthContext";
-import useConversationContext from "../../contexts/ConversationContext";
 import profile from "../../assets/images/7.png";
-import AsideHeader from "../Aside/AsideHeader";
-import { Link } from "react-router-dom";
-// import useConversationContext from "../../contexts/ConversationContext";
+import AsideHeader from "../../components/Aside/AsideHeader";
+import { useSelector,useDispatch } from "react-redux";
+import { getNotificationsData,acceptInvitation,refuseInvitation } from "../../redux/apis/notificationApi";
 
 
 const NotificationBody = () => {
-    const {user} = useAuthContext();
-    const [notifactionsData,setnotifactionsData] = useState(null);
-    const {notifaction,acceptInvitation} = useConversationContext();   
+    const disptach = useDispatch(); 
+
+    const {notificationsData,loading} = useSelector(state => state.notification);
+
 
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const result = await notifaction(user);
-            setnotifactionsData(result);
+             await getNotificationsData(disptach);
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -24,10 +22,22 @@ const NotificationBody = () => {
         fetchData();
     }, []);
 
-    const handleAccepteInvitation = async (e,receiver_id,notification_id) => {
+    const handleAccepteInvitation = async (e,notification_id) => {
       e.preventDefault();
-      const result = await acceptInvitation(user,notification_id);
-      console.log(result);
+      const result = await acceptInvitation(notification_id);
+      if(result) {
+        console.log(result);
+        await getNotificationsData(disptach);
+        alert('invitation accepted')
+      }
+    }
+    const handleRefuseInvitation = async (e,notification_id) => {
+      e.preventDefault();
+      const result = await refuseInvitation(notification_id);
+      if(result) {
+        await getNotificationsData(disptach);
+        alert('invitation refused')
+      }
     }
  
     return (
@@ -37,7 +47,7 @@ const NotificationBody = () => {
             <div className="hide-scrollbar">
               <div className="container py-8">
                 <AsideHeader content="notifications" />
-                { notifactionsData && notifactionsData.map((notification) => (
+                { loading && notificationsData.map((notification) => (
                     <div className="card-list mb-3">
                             <div  className="card border-0 text-reset" >
                                 <div className="card-body">
@@ -68,8 +78,8 @@ const NotificationBody = () => {
                                         { notification['data']['type_notification'] == 'invitation' ?
                                           
                                           <div className="col-10" style={{marginTop:"-12px"}}>
-                                            <button className="btn btn-primary  btn-sm" style={{marginRight:"3px"}} onClick={(e) => handleAccepteInvitation(e,notification['data']['sender_id'],notification.id)}>Confirm</button>
-                                            <button className="btn btn-primary btn-sm">Delete</button>
+                                            <button className="btn btn-primary  btn-sm" style={{marginRight:"3px"}} onClick={(e) => handleAccepteInvitation(e,notification.id)}>Confirm</button>
+                                            <button className="btn btn-primary btn-sm" onClick={(e) => handleRefuseInvitation(e,notification.id)}>Delete</button>
                                           </div>
                                           : 
                                          ''

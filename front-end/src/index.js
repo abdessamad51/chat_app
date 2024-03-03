@@ -9,14 +9,18 @@ import  './assets/js/template.js';
 import  './assets/js/vendor.js';
 import  './assets/css/template.dark.bundle.css';
 import  './assets/css/template.bundle.css';
-import { AuthProvider } from './contexts/AuthContext.js';
+import { Provider } from 'react-redux';
+import { store } from './redux/store.js';
+// import { AuthProvider } from './contexts/AuthContext.js';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <AuthProvider>
+    {/* <AuthProvider> */}
+    <Provider store={store}>
       <App />
-    </AuthProvider>
+    </Provider>
+    {/* </AuthProvider> */}
   </React.StrictMode>
 );
 

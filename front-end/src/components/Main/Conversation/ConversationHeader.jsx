@@ -1,6 +1,6 @@
 
 import React from "react";
-import profile from "../../assets/images/7.png";
+import profile from "../../../assets/images/7.png";
 const ConversationHeader = ({conversation_name}) => {
   return (
     <div className="chat-header border-bottom py-4 py-lg-7">

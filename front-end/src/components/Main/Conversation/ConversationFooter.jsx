@@ -90,7 +90,7 @@ const ConversationFooter = ({handleSendMessages,handleChange,replay,handleKeyPre
         <div className="col-auto">
           <button
             className="btn btn-icon btn-primary rounded-circle ms-5"
-            type="submit"
+            type="submit"  disabled={replay === ''}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

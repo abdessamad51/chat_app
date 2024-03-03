@@ -14,7 +14,11 @@ class RegisterController extends Controller
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 
             $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
-            $success['user'] =  $user;
+            $success['user'] =  [
+                'id' => $user->id,
+                'full_name' => $user->full_name,
+                'email' =>  $user->email,
+            ];
 
             return response()->json([
                 "result" => true,

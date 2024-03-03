@@ -1,82 +1,65 @@
 import React, { useEffect, useState,useRef } from "react";
-import useAuthContext from "../../contexts/AuthContext";
-import useConversationContext from "../../contexts/ConversationContext";
-
 import CardListFriend from "./CardListFriend";
 import CardListFriendChat from "./CardListFriendChat";
 import AsideRecherche from "./AsideRecherche";
 import AsideHeader from "./AsideHeader";
 import waitUser from "../../assets/images/waitUser.svg";
 import addUser from "../../assets/images/addUser.svg";
+import { useSelector,useDispatch } from "react-redux";
+import { conversationClick,chatsRechereche } from "../../redux/apis/converstionApi";
+
+import { getChatsData,getFriendsData,getRechercheFriends } from "../../redux/apis/converstionApi";
+import { sendInvitation } from "../../redux/apis/notificationApi";
 
 
 const Aside = ({content}) => {
-    const {user,notify} = useAuthContext();
-    const {setConversationData,GetConversation,FriendsData,getUsers,sendInvitation,getChats} = useConversationContext();
-    const [conversations, setConversations] = useState(null);
-    const [RechercheUser, setRechercheUser] = useState(null);
+    const disptach = useDispatch();
+    const {chatsData,loadingChats} = useSelector((state) => state.chat)
+    const {friendsData,loadingFriends} = useSelector((state) => state.friend)
+    // const [recherche,setRecherche] = useState('');
+   
+  
     
     useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const result =
-            content == "chats"
-              ? await GetConversation(user)
-              : await FriendsData(user);
-          setConversations(result);
-        } catch (error) {
-          console.log(error.message)
-          alert(`Error fetching data: ${error.message}`);
-        }
-      };
-      fetchData();
-     
-    
-       
+      if(content !== 'friends') {
+        getChatsData(disptach)
+      } else {
+        getFriendsData(disptach)
+      }  
     }, []);
     
     const handleClick = (e,conversation_id,conversation_name) => {
-      
       e.preventDefault();
-      setConversationData({
+      conversationClick({
         conversation_id,
         conversation_name
-      })
+      },disptach)
     }
 
-    const rechercheUser = async (e) => {
-      if(e.target.value == '') {
-        const data = await FriendsData(user)
-        setConversations(data)
+    const handleRechercheFriends = async (e) => {
+      if(e.target.value.trim() == '') {
+        getFriendsData(disptach) 
       } else {
-        const data = await getUsers(user,e.target.value)
-        setRechercheUser(e.target.value)
-        setConversations(data)
+        await getRechercheFriends(disptach,e.target.value)
       }
     }
 
-    const rechercheChats = async (e) => {
-      if(e.target.value == '') {
-        const data = await GetConversation(user)
-        setConversations(data)
-      } else {
-        const data = await getChats(user,e.target.value)
-        // setRechercheUser(e.target.value)
-        setConversations(data)
-      }
+    const handlerechercheChats = async (e) => {
+      await chatsRechereche(e.target.value,disptach);
     }
 
     const handleSendingInvitation = async (e,receiver_id,full_name) => {
       e.preventDefault();
-      const data = await sendInvitation(user,receiver_id)
+      const data = await sendInvitation(receiver_id)
       if(data) {
         alert('your request friend sent')
-        const data = await getUsers(user,RechercheUser)
-        setConversations(data) 
+        // need to edit
+        await getRechercheFriends(disptach,full_name)
       }
     }
- 
+    
     return (
+        
         <div className="sidebar bg-light" id="sidebar" >
             <div className="fade h-100 tab-pane show active">
                 <div className="d-flex flex-column h-100 position-relative">
@@ -88,13 +71,13 @@ const Aside = ({content}) => {
                             content !== 'friends' 
                             ?
                             <>
-                             <AsideRecherche  recherche={rechercheChats} />
-                             <CardListFriendChat friendsChat={conversations} handleClick = {handleClick}  />
+                             <AsideRecherche  recherche={handlerechercheChats} />
+                             <CardListFriendChat friendsChat={chatsData} loading = {loadingChats} handleClick = {handleClick}  />
                             </>
                             :
                             <>
-                             <AsideRecherche recherche={rechercheUser} />
-                             <CardListFriend friends={conversations} handleClick = {handleClick} handleSendingInvitation={handleSendingInvitation}  /> 
+                             <AsideRecherche recherche={handleRechercheFriends} />
+                             <CardListFriend friends={friendsData} handleClick = {handleClick} handleSendingInvitation={handleSendingInvitation} loading = {loadingFriends}  /> 
 
                             </>
                            }

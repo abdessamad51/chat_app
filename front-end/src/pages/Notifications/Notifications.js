@@ -1,17 +1,12 @@
 import React from "react";
-import NotificationBody from "../../components/NotificationBody/NotificationBody";
-import Master from "../../components/Master";
-import { ConversationProvider } from '../../contexts/ConversationContext.js';
+import NotificationBody from "./NotificationBody.js";
 import Nav from "../../components/Nav/Nav.js";
 const Notifications =  () => {
     return (
         <div className="App layout overflow-hidden">
-        <Nav />  
-           <ConversationProvider>
-              <NotificationBody />
-           </ConversationProvider>
+            <Nav />  
+            <NotificationBody />
         </div>
-      
     );
 };
 export default Notifications;

@@ -1,13 +1,12 @@
 import React from "react";
- import  "../LoginBody/LoginBody.css"
+ import  "../../pages/Login/LoginBody.css"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { NavLink } from "react-router-dom";
-const SignUpBody =  ({handleSignUp}) => {
+const SingUpBody =  ({handleSingUp}) => {
     return (
       <div>
       <div className="wrapper">
-      <form className="form-signin" onSubmit={(e) => handleSignUp(e)}>       
+      <form className="form-signin" onSubmit={(e) => handleSingUp(e)}>       
         <h2 className="form-signin-heading">Please Sign Up</h2>
         <input type="text" className="form-control in" name="full_name" placeholder="Full name" required="" autofocus="" />
         <input type="email" className="form-control in" name="email" placeholder="Email" required=""/>    
@@ -21,5 +20,5 @@ const SignUpBody =  ({handleSignUp}) => {
     </div>
     );
 };
-export default SignUpBody;
+export default SingUpBody;
     

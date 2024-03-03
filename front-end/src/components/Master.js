@@ -1,11 +1,14 @@
 import React from "react";
 import Nav from './Nav/Nav.js';
-import { ConversationProvider } from '../contexts/ConversationContext.js';
+import Aside from './Aside/Aside.js';
+import Main from './Main/Main.js';
 
-const Master = () => {
+const Master = ({page}) => {
     return (
         <>
-            <Nav />     
+            <Nav /> 
+            <Aside  content = {page}/>     
+            <Main />      
         </>  
     );
 };

@@ -36,5 +36,6 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('getChats/{name?}',[ConversationController::class,'getChats']);  
     Route::get('sendInvitation/{receiver_id}',[ConversationController::class,'sendInvitation']); 
     Route::get('acceptInvitation/{receiver_id}',[ConversationController::class,'acceptInvitation']); 
+    Route::get('refuseInvitation/{receiver_id}',[ConversationController::class,'refuseInvitation']); 
 });
 

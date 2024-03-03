@@ -39,6 +39,7 @@ class MessageController extends Controller
                 'conversation_id' => $request->conversation_id,
                 'user_id' => $user->id
             ]);
+            $message = $message->withAggregate('conversation','id')->first();
             $receiver_user_id = $this->getReceiverMessageUser($message);
             event(new MessageCreated($message,$receiver_user_id));
             DB::commit();
@@ -115,8 +116,7 @@ class MessageController extends Controller
     {
         $lastMessage = Message::where('conversation_id',$conversation_id)
                     ->orderBy('created_at','DESC')
-                    ->pluck('message')
-                    ->first();
+                    ->pluck('message');
         return $lastMessage;
     }
 }

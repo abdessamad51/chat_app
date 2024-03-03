@@ -1,41 +1,55 @@
 import React, { useEffect, useRef, useState } from "react";
+// import ConversationHeader from "./ConversationHeader.jsx";
+// import ConversationBody from "./ConversationBody.jsx";
+// ConversationHeader
+// import ConversationFooter from "./ConversationFooter.jsx";
 
-import useConversationContext from "../../contexts/ConversationContext.js";
-import useAuthContext from '../../contexts/AuthContext.js';
+
+import { useSelector,useDispatch } from "react-redux";
+import { conversationClick } from "../../../redux/apis/converstionApi.js";
+import { addMessage } from "../../../redux/reducers/messageSlice.js";
+import { sendMessage, showMessagesConversation } from "../../../redux/apis/messagesApi.js";
+import { connectToPusher } from "../../../redux/apis/pusher.js";
 import ConversationHeader from "./ConversationHeader.jsx";
 import ConversationBody from "./ConversationBody.jsx";
 import ConversationFooter from "./ConversationFooter.jsx";
+
 const Content = () => {
 
-  const {showConversation,conversationData,sendMessage,connectToPusher} = useConversationContext();
-  const {user} = useAuthContext();
-  const [messagesConversation, setMessagesConversation] = useState(null);
-  const {conversation_id,conversation_name} = conversationData;
+  // const {showConversation,conversationData,sendMessage,connectToPusher} = useConversationContext();
+  // const {user} = useAuthContext();
+  const messagesConversation = useSelector(state => state.message.messagesData);
+
+  const conversationIn = useSelector((state) => state.chat.conversationIn);
+  const {conversation_id,conversation_name} = conversationIn;
   const [replay, setReplay] = useState('');
   const containeur = useRef()
+  const disptach = useDispatch();
+  const user = useSelector(state => state.auth.user)
+
   useEffect(() => {
     containeur.current.scrollTop = containeur.current.scrollHeight;
-  },[conversationData,messagesConversation]);
+  },[conversationIn,messagesConversation]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await showConversation(conversation_id,conversation_name,user);
-        setMessagesConversation(result);
+        await showMessagesConversation(conversation_id,disptach);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchData();
-  }, [conversationData]);
+  }, [conversationIn]);
+
 
   useEffect(() => {
 
-    const Echo =  connectToPusher(user);
+    const Echo =  connectToPusher();
     // Subscribe to the private channel
     Echo.private(`chat.${user.user_id}`).listen(".message", (event) => {
       event.message_user_connect = false;
-      setMessagesConversation((messagesConversation) => [...messagesConversation,event]);
+      disptach(addMessage(event));
     });
     // Clean up on component unmount
     return () => {
@@ -54,9 +68,9 @@ const Content = () => {
 
   const handleSendMessages = async (e) => {
     e.preventDefault();
-    const data = await sendMessage(conversation_id,replay,user)
+    await sendMessage(conversation_id,replay,disptach)
     setReplay('')
-    setMessagesConversation((messagesConversation) =>[...messagesConversation,data]);
+    // setMessagesConversation((messagesConversation) =>[...messagesConversation,data]);
   };
 
   const handleKeyPress = async (e) => {
