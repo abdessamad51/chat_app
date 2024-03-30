@@ -63,6 +63,7 @@ class NewInvitationNotification extends Notification
         return [
             'type_notification' => $this->typeNotification,
             'sender_fullName' => $this->sender->full_name,
+            'sender_image' => $this->sender->image,
             'sender_id' => $this->sender->id,
             'message' => $this->message
         ];

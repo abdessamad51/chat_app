@@ -4,7 +4,8 @@ import NavItems from "./NavItems";
 import {NavLink } from "react-router-dom";
 import Echo from "laravel-echo";
 import { useDispatch,useSelector } from "react-redux";
-import { auth } from "../../redux/apis/userApi.js";
+
+
 
 
 const Nav = () => {
@@ -12,6 +13,7 @@ const Nav = () => {
   const disptach = useDispatch();
   const user = useSelector(state => state.auth.user)
   const [notificationCount,setnotificationCount] = useState(null);
+
  
   useEffect(() => {
     if (user && user.token && user.user_id) {
@@ -38,18 +40,22 @@ const Nav = () => {
     }
   }, [user]);
         
+  const logOut = () => {
+    localStorage.removeItem('user');
+    window.location.reload();
+  }
 
   return (
-      <nav className="navigation d-flex flex-column text-center navbar navbar-light hide-scrollbar">
+      <nav className="navigation d-flex flex-column text-center navbar navbar-light">
         <NavLink
           href="index.html"
           title="Messenger"
           className="d-none d-xl-block mb-6"
         >
-          <img src={imageFile} alt="Logo" className="mb-1" />
+          <img src={imageFile} alt="Logo" className="mb-1 rounded-circle" width="55" height="55"/>
         </NavLink>
 
-        <NavItems notificationCount={notificationCount} user={user}/>
+        <NavItems notificationCount={notificationCount} user={user} logOut={logOut}/>
       </nav>
   );
 };

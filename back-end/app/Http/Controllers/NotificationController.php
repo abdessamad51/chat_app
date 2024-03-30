@@ -16,18 +16,10 @@ class NotificationController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return  $user->unreadNotifications()->get();
+        return  $user->unreadNotifications()
+                    ->select('id','data')
+                    ->get();
         
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**

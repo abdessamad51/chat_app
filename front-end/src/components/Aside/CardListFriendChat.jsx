@@ -5,12 +5,12 @@ const CardListFriendChat = ({friendsChat,loading,handleClick}) => {
     return (
         <div className="card-list chat">
         {  loading && friendsChat.map((friend) => (
-            <Link onClick={(e) => handleClick(e,friend.conversation_id,friend.participant_full_name) } className="card border-0 text-reset" key={friend.conversation_id}>
+            <Link onClick={(e) => handleClick(e,friend.conversation_id,friend.participant_full_name,friend.participant_image) } className="card border-0 text-reset" key={friend.conversation_id}>
                 <div className="card-body" >
                     <div className="row gx-5">
                         <div className="col-auto">
                             <div className="avatar avatar-online">
-                                <img  src={require(`../../assets/images/7.png`)} alt="#" className="avatar-img"/>
+                                <img  src={"http://localhost:8000/storage/" + friend.participant_image} alt="#" className="avatar-img"/>
                             </div>
                         </div>
 

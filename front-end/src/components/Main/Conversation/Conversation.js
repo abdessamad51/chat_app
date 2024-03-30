@@ -21,7 +21,7 @@ const Content = () => {
   const messagesConversation = useSelector(state => state.message.messagesData);
 
   const conversationIn = useSelector((state) => state.chat.conversationIn);
-  const {conversation_id,conversation_name} = conversationIn;
+  const {conversation_id,conversation_name,conversation_image} = conversationIn;
   const [replay, setReplay] = useState('');
   const containeur = useRef()
   const disptach = useDispatch();
@@ -34,7 +34,7 @@ const Content = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await showMessagesConversation(conversation_id,disptach);
+        await showMessagesConversation(conversation_id,disptach,user);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -68,7 +68,7 @@ const Content = () => {
 
   const handleSendMessages = async (e) => {
     e.preventDefault();
-    await sendMessage(conversation_id,replay,disptach)
+    await sendMessage(conversation_id,replay,disptach,user)
     setReplay('')
     // setMessagesConversation((messagesConversation) =>[...messagesConversation,data]);
   };
@@ -84,7 +84,7 @@ const Content = () => {
     <div className="container h-100">
       <div className="d-flex flex-column h-100 position-relative">
       
-        <ConversationHeader conversation_name={conversation_name} />
+        <ConversationHeader conversation_name={conversation_name} conversation_image={conversation_image}/>
         <ConversationBody containeur = {containeur} messagesConversation={messagesConversation} getTime={getTime}/>
         <ConversationFooter handleSendMessages={handleSendMessages} handleChange={handleChange} replay={replay} handleKeyPress={handleKeyPress}/>
       </div>

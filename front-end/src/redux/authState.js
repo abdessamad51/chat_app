@@ -5,7 +5,8 @@ const authState = () => {
         user_id : null,
         full_name : "",
         email: "",
-        token : ""
+        token : "",
+        image : null,
     }
     if (localStorage.getItem("user")) {
         user =  JSON.parse(localStorage.getItem("user"));

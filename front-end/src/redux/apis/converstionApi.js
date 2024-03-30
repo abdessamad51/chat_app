@@ -1,6 +1,7 @@
-import axiosConfig from '../../axios/axiosConfig'
 import { getConversationClick,chatsData,rechereche } from "../reducers/chatSlice";
 import { friendsData,rechercheFriends } from "../reducers/friendSlice";
+import axiosConfig from "../../axios/axiosConfig";
+
 
 
 export const  conversationClick =  (conversation,dispatch) => {
@@ -8,32 +9,47 @@ export const  conversationClick =  (conversation,dispatch) => {
 }
 
 export const showConversation = async (id,conversation_name,user,content=null) => {
-  const res = await axiosConfig.get("conversations/"+id)
+  const res = await axiosConfig.get("conversations/"+id,{
+    headers : {
+     Authorization: `Bearer ${user.token}` // Include the token in the request headers
+  }})
   return res.data;
 };
 
-export const getFriendsData = async (dispatch) => {
+export const getFriendsData = async (dispatch,user) => {
   try {
-    const res = await axiosConfig.get("conversations/friends")
+    const res = await axiosConfig.get("conversations/friends",{
+      headers : {
+       Authorization: `Bearer ${user.token}` // Include the token in the request headers
+    }})
     dispatch(friendsData(res.data));
   } catch(error) {
     console.log(error);
   }
 }
 
-export const getRechercheFriends = async (dispatch,search_name) => {
-  const data = await axiosConfig.get(`getUsers/${search_name}`)
+export const getRechercheFriends = async (dispatch,search_name,user=null) => {
+  const data = await axiosConfig.get(`getUsers/${search_name}`,{
+    headers : {
+     Authorization: `Bearer ${user.token}` // Include the token in the request headers
+  }})
   dispatch(rechercheFriends(data.data));
 }
   
-export const chatsRechereche = async (search_name,dispatch) => {
-  const data = await axiosConfig.get(`getChats/${search_name}`)
+export const chatsRechereche = async (search_name,dispatch,user=null) => {
+  const data = await axiosConfig.get(`getChats/${search_name}`,{
+    headers : {
+     Authorization: `Bearer ${user.token}` // Include the token in the request headers
+  }})
   dispatch(rechereche(data.data))
 }
   
-export const getChatsData =  async (dispatch) => {
+export const getChatsData =  async (dispatch,user) => {
   try {
-    const data = await axiosConfig.get("conversations");
+    const data = await axiosConfig.get("conversations",{
+      headers : {
+       Authorization: `Bearer ${user.token}` // Include the token in the request headers
+    }});
     dispatch(chatsData(data.data))
   } catch(error) {
     console.log(error);
@@ -41,17 +57,3 @@ export const getChatsData =  async (dispatch) => {
 }
 
 
-// const lastMessage = async (user,conversation_id) => {
-//   const data = await axiosConfig.get(`conversations/${conversation_id}/lastMessage`,{
-//     headers : {
-//      Authorization: `Bearer ${user.token}` // Include the token in the request headers
-//     }
-//   })
-
-//   return data.data;
-// }
-
-// const notifaction = async (user) => {
-//   const data = await axiosConfig.get(`notifications`)
-//   return data.data;
-// }

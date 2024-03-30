@@ -9,12 +9,13 @@ const NotificationBody = () => {
     const disptach = useDispatch(); 
 
     const {notificationsData,loading} = useSelector(state => state.notification);
+    const user = useSelector(state => state.auth.user)
 
 
     useEffect(() => {
         const fetchData = async () => {
           try {
-             await getNotificationsData(disptach);
+             await getNotificationsData(disptach,user);
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -24,16 +25,11 @@ const NotificationBody = () => {
 
     const handleAccepteInvitation = async (e,notification_id) => {
       e.preventDefault();
-      const result = await acceptInvitation(notification_id);
-      if(result) {
-        console.log(result);
-        await getNotificationsData(disptach);
-        alert('invitation accepted')
-      }
+      await acceptInvitation(disptach,notification_id,user);
     }
     const handleRefuseInvitation = async (e,notification_id) => {
       e.preventDefault();
-      const result = await refuseInvitation(notification_id);
+      const result = await refuseInvitation(disptach,notification_id,user);
       if(result) {
         await getNotificationsData(disptach);
         alert('invitation refused')
@@ -54,7 +50,7 @@ const NotificationBody = () => {
                                     <div className="row gx-5 d-flex align-items-center">
                                         <div className="col-2">
                                         <div className="avatar">
-                                            <img src={profile} alt="#" className="avatar-img" />
+                                            <img src={"http://localhost:8000/storage/" + notification['data']['sender_image'] } alt="#" className="avatar-img" />
                                         </div>
                                         </div>
 

@@ -7,55 +7,50 @@ import waitUser from "../../assets/images/waitUser.svg";
 import addUser from "../../assets/images/addUser.svg";
 import { useSelector,useDispatch } from "react-redux";
 import { conversationClick,chatsRechereche } from "../../redux/apis/converstionApi";
-
 import { getChatsData,getFriendsData,getRechercheFriends } from "../../redux/apis/converstionApi";
-import { sendInvitation } from "../../redux/apis/notificationApi";
+import { sendingInvitation } from "../../redux/apis/notificationApi";
 
 
 const Aside = ({content}) => {
     const disptach = useDispatch();
     const {chatsData,loadingChats} = useSelector((state) => state.chat)
     const {friendsData,loadingFriends} = useSelector((state) => state.friend)
-    // const [recherche,setRecherche] = useState('');
+    const user = useSelector(state => state.auth.user)
+
    
-  
-    
     useEffect(() => {
       if(content !== 'friends') {
-        getChatsData(disptach)
+        getChatsData(disptach,user)
       } else {
-        getFriendsData(disptach)
+        getFriendsData(disptach,user)
       }  
     }, []);
     
-    const handleClick = (e,conversation_id,conversation_name) => {
+    const handleClick = (e,conversation_id,conversation_name,conversation_image) => {
       e.preventDefault();
       conversationClick({
         conversation_id,
-        conversation_name
+        conversation_name,
+        conversation_image
       },disptach)
     }
 
     const handleRechercheFriends = async (e) => {
       if(e.target.value.trim() == '') {
-        getFriendsData(disptach) 
+        getFriendsData(disptach,user) 
       } else {
-        await getRechercheFriends(disptach,e.target.value)
+        await getRechercheFriends(disptach,e.target.value,user)
       }
     }
 
     const handlerechercheChats = async (e) => {
-      await chatsRechereche(e.target.value,disptach);
+      await chatsRechereche(e.target.value,disptach,user);
     }
 
     const handleSendingInvitation = async (e,receiver_id,full_name) => {
       e.preventDefault();
-      const data = await sendInvitation(receiver_id)
-      if(data) {
-        alert('your request friend sent')
-        // need to edit
-        await getRechercheFriends(disptach,full_name)
-      }
+      await sendingInvitation(disptach,receiver_id,user)
+     
     }
     
     return (
@@ -64,7 +59,7 @@ const Aside = ({content}) => {
             <div className="fade h-100 tab-pane show active">
                 <div className="d-flex flex-column h-100 position-relative">
                     <div className="hide-scrollbar">
-                        <div className="container py-8">
+                      <div className="container py-8">
                            <AsideHeader content={content} />
                         
                            {
@@ -81,7 +76,7 @@ const Aside = ({content}) => {
 
                             </>
                            }
-                        </div>
+                      </div>
                     </div>
                 </div>
             </div>

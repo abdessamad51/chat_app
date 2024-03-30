@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Notifications\NewInvitationNotification;
+use Illuminate\Support\Facades\Storage;
 
 class ConversationController extends Controller
 {
@@ -23,13 +24,14 @@ class ConversationController extends Controller
      */
     public function index()
     {
+        // return Storage::disk('public')->url('images/profils/default.png');
         $user = Auth::user();        
         // get conversation participant
         $conversation_has_message = $user->conversationsParticipantsHasMessages()->pluck('conversation_id');
                                                      
         $conversation_participant = ConversationParticipant::whereIn('conversation_id',$conversation_has_message)
                                     ->withAggregate('participant','full_name')
-                                    // ->withAggregate('lastMessage','message')
+                                    ->withAggregate('participant','image')
                                     ->with('lastMessage:message,conversation_id')
                                     ->whereHas('participant')
                                     ->get(['id','participant_id','conversation_id']);
@@ -130,14 +132,20 @@ class ConversationController extends Controller
 
     public function friends()
     {
-         $user = Auth::user();
-        $conversation_ids = ConversationParticipant::where('participant_id',$user->id)->pluck('conversation_id');
-        $friends = ConversationParticipant::whereIn('conversation_id',$conversation_ids)->with('participant:id,full_name')->whereHas('participant')->get(['id','participant_id'
-             ,'conversation_id']);
+        $auth = Auth::user();
+        $conversation_ids = $auth->conversationsParticipants()->pluck('conversation_id');
+        $friends = ConversationParticipant::whereIn('conversation_id',$conversation_ids)
+                                        ->withAggregate('participant','full_name')
+                                        ->withAggregate('participant','image')
+                                        ->whereHas('participant')
+                                        ->get(['participant_id','conversation_id']);
+             
 
-        return $friends->map(function($friend) {
+        return $friends->map(function($friend) use($auth) {
+            $friend['id'] = $friend['participant_id'];
             $friend['is_friend'] = true;
             $friend['invitation_status'] = 'accepted';
+            unset($friend['participant_id']);
             return $friend;
         });
     }
@@ -145,24 +153,22 @@ class ConversationController extends Controller
     public function getUsers($name='') 
     {
         // $auth = Auth::user();
-        $users = User::where('full_name','like','%'.$name.'%')->where('id','!=',Auth::user()->id)->get(['id','full_name']);
+        $users = User::where('full_name','like','%'.$name.'%')->where('id','!=',Auth::user()->id)->get(['id','full_name','image']);
+        // get conversations has auth
         $auth_conversation_participans = Auth::user()->conversationsParticipants->pluck('conversation_id');
 
-        // return ConversationParticipant::whereIn('conversation_id',$auth_conversation_participans)->with('participant:id,full_name')->get(['id','user_id'
-        // ,'conversation_id']);
+       // compare conversations auth with conversations users
         $users = $users->map(function($user) use($auth_conversation_participans) {
                 $data = $user->load(['conversationsParticipants' => function($query) use($auth_conversation_participans) {
                                 $query->whereIn('conversation_id',$auth_conversation_participans)
-                            ->select('participant_id','conversation_id');
+                                ->select('participant_id');
             },'invitationStatus:status,receiver_id'])->toArray();
        
             return [
-                'user_id' => $data['conversations_participants'][0]['participant_id'] ?? null,
+                'id' => $user['id'],
                 'conversation_id' => $data['conversations_participants'][0]['conversation_id'] ?? null,
-                'participant' => [
-                    'id' => $data['id'],
-                    'full_name' => $data['full_name']
-                ],
+                'participant_full_name' => $data['full_name'],
+                'participant_image' => $data['image'],
                 'is_friend' => $data['conversations_participants'] ? true : false,
                 'invitation_status' => $data['invitation_status'] ? $data['invitation_status'][0]['status'] : null
             ];
@@ -199,7 +205,6 @@ class ConversationController extends Controller
         // return 'cc';
         try {
             $auth = Auth::user();
-            // return $auth->invitationStatus;
             $user = User::find($receiver_id);
             Invitation::create([
                 'sender_id' => $auth->id,
@@ -208,7 +213,13 @@ class ConversationController extends Controller
             $user->notify(new NewInvitationNotification('invitation'));
            
             DB::commit();
-             return response()->json(__('Invitation sending'), 200);
+            $response = [
+                'message' => 'invitation sending',
+                'data' => [
+                    'receiver_id' => $receiver_id
+                ] 
+            ];
+            return response()->json($response, 200);
          } catch (\Throwable $th) {
             DB::rollback();
              return response()->json($th->getMessage(), 402);
@@ -245,7 +256,13 @@ class ConversationController extends Controller
             $notification->markAsRead();
             $receiver->notify(new NewInvitationNotification('information','accepted your friend request.'));
             DB::commit();
-            return response()->json($receiver, 200);
+            $response = [
+                'message' => 'accepted invitation success',
+                'data' => [
+                    'notification_id' => $notification_id
+                ] 
+            ];
+            return response()->json($response, 200);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json($th->getMessage(), 402);
@@ -264,7 +281,13 @@ class ConversationController extends Controller
             $receiver = User::find($notification['data']['sender_id']);
             $receiver->notify(new NewInvitationNotification('information','refused yout friend request'));
             DB::commit();
-            return response()->json($receiver, 200);
+            $response = [
+                'message' => 'accepted invitation success',
+                'data' => [
+                    'notification_id' => $notification_id
+                ] 
+            ];
+            return response()->json($response,200);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json($th->getMessage(), 402);

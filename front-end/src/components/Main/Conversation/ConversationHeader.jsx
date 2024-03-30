@@ -1,7 +1,7 @@
 
 import React from "react";
 import profile from "../../../assets/images/7.png";
-const ConversationHeader = ({conversation_name}) => {
+const ConversationHeader = ({conversation_name,conversation_image}) => {
   return (
     <div className="chat-header border-bottom py-4 py-lg-7">
       <div className="row align-items-center">
@@ -32,7 +32,7 @@ const ConversationHeader = ({conversation_name}) => {
                   <div className="avatar avatar-online d-none d-xl-inline-block">
                     <img
                       className="avatar-img"
-                      // src="assets/img/avatars/2.jpg"
+                      src={"http://localhost:8000/storage/" + conversation_image }
                       alt=""
                     />
                   </div>
@@ -88,7 +88,7 @@ const ConversationHeader = ({conversation_name}) => {
                       data-bs-toggle="modal"
                       data-bs-target="#modal-user-profile"
                     >
-                      <img className="avatar-img" src={profile} alt="#" />
+                      {/* <img className="avatar-img" src={"http://localhost:8000/storage/" + conversation_image } alt="#" /> */}
                     </a>
                   </div>
                 </div>

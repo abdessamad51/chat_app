@@ -20,6 +20,7 @@ use App\Http\Controllers\NotificationController;
 
 Route::post('login', [RegisterController::class, 'login']);
 Route::post('register', [RegisterController::class, 'register']);
+
  
 
 Route::middleware('auth:sanctum')->group( function () {
@@ -36,6 +37,8 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('getChats/{name?}',[ConversationController::class,'getChats']);  
     Route::get('sendInvitation/{receiver_id}',[ConversationController::class,'sendInvitation']); 
     Route::get('acceptInvitation/{receiver_id}',[ConversationController::class,'acceptInvitation']); 
-    Route::get('refuseInvitation/{receiver_id}',[ConversationController::class,'refuseInvitation']); 
+    Route::get('refuseInvitation/{receiver_id}',[ConversationController::class,'refuseInvitation']);
+    Route::get('profilPicture',[RegisterController::class, 'profilePicture']); 
+    
 });
 

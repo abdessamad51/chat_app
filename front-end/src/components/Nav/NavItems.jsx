@@ -2,7 +2,7 @@
 import React from "react";
 import {NavLink } from "react-router-dom";
 
-const NavItems = ({notificationCount,user}) => {
+const NavItems = ({notificationCount,user,logOut}) => {
   return (
     <ul
       className="d-flex nav navbar-nav flex-row flex-xl-column flex-grow-1 justify-content-between justify-content-xl-center align-items-center w-100 py-4 py-lg-2 px-lg-3"
@@ -111,32 +111,19 @@ const NavItems = ({notificationCount,user}) => {
       </li>  
         }
       <li className="nav-item">
-        <NavLink className="nav-link py-0 py-lg-8" title={user.full_name} href="#demo" data-toggle="collapse" aria-expanded="false" aria-controls="demo">
-        <div className="icon icon-xl">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="feather feather-settings"
-            >
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            
-        </div>
+        
+      <div class="btn-group dropright">
+        <NavLink className="nav-link py-0 py-lg-8 dropdown-toggle" data-bs-toggle="dropdown" title={user.full_name} aria-haspopup="true" aria-expanded="false">
+          <img src={"http://localhost:8000/storage/" + user.image_path} alt="Logo" className="mb-1 rounded-circle" width="30" height="30" />
         </NavLink>
+        <div className="dropdown-menu" style={{position:"absolute",left:"40px",top:"42px"}}>
+          <a className="dropdown-item" href="#">Profil</a>
+          <a className="dropdown-item" href="#" onClick={logOut}>Log out</a>
+        </div>
+      </div>
+       
       </li>
-      <div id="demo" className="collapse" >
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-  </div>
+   
     </ul>
   );
 };

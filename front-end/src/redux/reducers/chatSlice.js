@@ -6,7 +6,8 @@ const chatSlice = createSlice({
     loadingChats :false,
     conversationIn : {
       conversation_id : null,
-      conversation_name : ""
+      conversation_name : "",
+      conversation_image : null
     },
   },
   reducers: {
