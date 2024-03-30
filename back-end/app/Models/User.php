@@ -23,6 +23,7 @@ class User extends Authenticatable
         'full_name',
         'email',
         'password',
+        'image'
     ];
     
 
@@ -47,7 +48,7 @@ class User extends Authenticatable
     ];
 
     public function messages() {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class,'conversation_id','conversation_id');
     }
 
     public function conversations() {
@@ -57,6 +58,7 @@ class User extends Authenticatable
     public function conversationsParticipantsHasMessages() {
         return $this->hasMany(ConversationParticipant::class,'participant_id','id')->whereHas('messages');
     }
+
 
     public function invitationStatus() {
         return $this->hasMany(Invitation::class,'receiver_id')->where('sender_id',Auth::user()->id);

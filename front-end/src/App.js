@@ -3,7 +3,7 @@ import './App.css';
 // import Master from './components/Master';
 import Login from './pages/Login/Login.js';
 import { BrowserRouter, Route, Routes,Navigate} from 'react-router-dom';
-import SingUp from './pages/SingUp/SingUp.js';
+import SingUp from './pages/SignUp/SignUp.js';
 import Friends from "./pages/Friends/Friends.js";
 import Chats from "./pages/Chats/Chats.js";
 import Notifications from './pages/Notifications/Notifications.js';

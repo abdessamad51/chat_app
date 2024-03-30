@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class RegisterController extends Controller
 {
@@ -18,6 +20,7 @@ class RegisterController extends Controller
                 'id' => $user->id,
                 'full_name' => $user->full_name,
                 'email' =>  $user->email,
+                'image' => $user->image
             ];
 
             return response()->json([
@@ -33,15 +36,46 @@ class RegisterController extends Controller
     }
 
     public function register(Request $request) {
+        // return $request;
+        $rules = [
+            'full_name' => ['required'],
+            'password' => ['required', 'min:8'],
+            'password_confirmation' => ['required', 'min:8'],
+            'email' => ['required', 'email'],
+            'phone' => ['required'],
+            'image' => ['file']
+        ];
+        $validatedData = $this->validate($request, $rules);
 
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        $user = User::create($input);
+        $validatedData['password'] = Hash::make($validatedData['password']);
+        // return $request->image;
+        if($request->hasFile('image')) {
+            $image_path = $request->file('image')->store('images/profils', 'public');
+            $validatedData['image'] = $image_path;
+        }
+
+        $user =  User::create($validatedData);
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
+        $user = User::find($user->id);
         $success['user'] =  $user;
+        // return $;
         return response()->json([
             "result" => true,
             "data" => $success
         ]);
+    }
+
+    // public function profilePicture() {
+    //   $user=Auth::user();
+      
+    //   if ($user->image) {
+    //     // Generate the full URL for the profile picture
+    //     $profilePictureUrl = Storage::url($user->image);
+
+    //     return response()->json(['profile_picture' => $profilePictureUrl]);
+    // } else {
+    //     return response()->json(['message' => 'Profile picture not found'], 404);
+    // }
+
     }
 }
