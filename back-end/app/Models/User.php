@@ -46,23 +46,31 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function messages() {
+    public function messages() 
+    {
         return $this->hasMany(Message::class);
     }
 
-    public function conversations() {
-        return $this->belongsToMany(Conversation::class,'conversation_participant');
+    public function conversations() 
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_participant');
     }
 
-    public function conversationsParticipantsHasMessages() {
-        return $this->hasMany(ConversationParticipant::class,'participant_id','id')->whereHas('messages');
+    public function conversationsParticipantsHasMessages() 
+    {
+        return $this->hasMany(ConversationParticipant::class, 'participant_id','id')
+                    ->whereHas('messages');
     }
 
-    public function invitationStatus() {
-        return $this->hasMany(Invitation::class,'receiver_id')->where('sender_id',Auth::user()->id);
+    public function invitationStatus() 
+    {
+        return $this->hasMany(Invitation::class, 'receiver_id')
+                    ->where('sender_id', Auth::user()->id);
     }
-    public function conversationsParticipants() {
-        return $this->hasMany(ConversationParticipant::class,'participant_id','id');
+
+    public function conversationsParticipants() 
+    {
+        return $this->hasMany(ConversationParticipant::class, 'participant_id', 'id');
     }
 
  }

@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class ConversationParticipant extends Model
 {
     use HasFactory,SoftDeletes;
+
     protected $table = "conversation_participant";
+
     protected $fillable = [
         'participant_id',
         'conversation_id'
@@ -22,13 +24,12 @@ class ConversationParticipant extends Model
         'deleted_at'
     ];
 
-    public function participant() {
-        return $this->belongsTo(User::class,'participant_id')->where('id','!=',Auth::user()->id);
+    public function participant() 
+    {
+        return $this->belongsTo(User::class, 'participant_id')
+                    ->where('id', '!=', Auth::user()->id);
     }
 
-    // public function participant1() {
-    //     return $this->belongsTo(User::class,'conversation_participant','')->where('id','!=',Auth::user()->id);
-    // }
     public function conversation()
     {
         return $this->belongsTo(Conversation::class,'conversation_id');
@@ -36,11 +37,12 @@ class ConversationParticipant extends Model
 
     public function messages() 
     {
-        return $this->hasMany(Message::class,'conversation_id','conversation_id');
+        return $this->hasMany(Message::class,'conversation_id', 'conversation_id');
     }
 
-    public function lastMessage() {
-        return $this->hasOne(Message::class,'conversation_id','conversation_id')->latest();
+    public function lastMessage() 
+    {
+        return $this->hasOne(Message::class, 'conversation_id', 'conversation_id')->latest();
     }
     
     

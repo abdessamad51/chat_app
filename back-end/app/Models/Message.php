@@ -16,7 +16,8 @@ class Message extends Model
         'created_at'
     ];
 
-    public function  conversation() {
-        return $this->belongsTo(Conversation::class,'conversation_id');
+    public function conversation() 
+    {
+        return $this->belongsTo(Conversation::class, 'conversation_id');
     }
 }

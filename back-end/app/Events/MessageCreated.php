@@ -19,22 +19,12 @@ class MessageCreated implements ShouldBroadcast
     public $message;
     public $receiver_user_id;
 
-    /**
-     * Create a new event instance.
-     * 
-     * @return void
-     */
-    public function __construct(Message $message,$receiver_user_id)
+    public function __construct(Message $message, $receiver_user_id)
     {
         $this->message = $message;
         $this->receiver_user_id = $receiver_user_id;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
     public function broadcastOn()
     {
         return new PrivateChannel('chat.'.$this->receiver_user_id);

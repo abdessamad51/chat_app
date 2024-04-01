@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class Invitation extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'sender_id',
         'receiver_id'
@@ -16,6 +17,6 @@ class Invitation extends Model
 
     public function user() 
     {
-        return $this->belongsTo(User::class,'receiver_id');
+        return $this->belongsTo(User::class, 'receiver_id');
     }
 }
