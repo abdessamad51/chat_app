@@ -47,10 +47,10 @@ class ConversationController extends Controller
     public function store(Request $request)
     {
         try {
-            $valdited = $request->valited([
-               'name' =>  $request->input('name')
+            $validated = $request->validate([
+                'name' => 'required|string|max:255'
             ]);
-            Conversation::create($valdited);
+            Conversation::create($validated);
             DB::commit();
             return response()->json(__('Conversation Created'), 200);
         } catch (\Throwable $th) {
@@ -92,10 +92,10 @@ class ConversationController extends Controller
             if(!$conversation)  {
                return response()->json(__('conversation not found'), 404);  
             }  
-            $valdited = $request->valited([
-                'name' =>  $request->input('name')
-             ]);
-            $conversation->update($valdited);
+            $validated = $request->validate([
+                'name' => 'required|string|max:255'
+            ]);
+            $conversation->update($validated);
             DB::commit();
             return response()->json(__('Conversation updated'), 200);  
 
