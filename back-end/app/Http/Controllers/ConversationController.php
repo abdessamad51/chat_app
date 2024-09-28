@@ -24,9 +24,7 @@ class ConversationController extends Controller
      */
     public function index()
     {
-        // return Storage::disk('public')->url('images/profils/default.png');
         $user = Auth::user();        
-        // get conversation participant
         $conversation_has_message = $user->conversationsParticipantsHasMessages()->pluck('conversation_id');
                                                      
         $conversation_participant = ConversationParticipant::whereIn('conversation_id',$conversation_has_message)
@@ -49,7 +47,10 @@ class ConversationController extends Controller
     public function store(Request $request)
     {
         try {
-            Conversation::create($request->all());
+            $valdited = $request->valited([
+               'name' =>  $request->input('name')
+            ]);
+            Conversation::create($valdited);
             DB::commit();
             return response()->json(__('Conversation Created'), 200);
         } catch (\Throwable $th) {
@@ -58,33 +59,22 @@ class ConversationController extends Controller
         } 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Conversation $conversation)
     {
-    //  if(ConversationParticipant::where(['user_id' => Auth::user()->id,'conversation_id' =>$conversation->id])->count()) {
-      
-     
-        $messages  = $conversation->messages;
 
-        foreach($messages as $message ) {
+        $messagesConvesation  = $conversation->messages;
+
+        foreach($messagesConvesation as $message ) {
+            
             if($message['user_id'] == Auth::user()->id) {
                 $message["message_user_connect"] = true;
-                // return "in";
             } else {
                 $message["message_user_connect"] = false;
             }
         }
 
-        return  $messages;
-    //  } else {
-    //     return response()->json(__('permssien denied'), 404);  
-    //  };
-     // return $conversation->wherein('id',$conversation_access)->get();
+        return  $messagesConvesation;
        
     }
 
@@ -102,7 +92,10 @@ class ConversationController extends Controller
             if(!$conversation)  {
                return response()->json(__('conversation not found'), 404);  
             }  
-            $conversation->update($request->all());
+            $valdited = $request->valited([
+                'name' =>  $request->input('name')
+             ]);
+            $conversation->update($valdited);
             DB::commit();
             return response()->json(__('Conversation updated'), 200);  
 

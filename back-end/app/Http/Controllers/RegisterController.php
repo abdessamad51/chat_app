@@ -36,7 +36,7 @@ class RegisterController extends Controller
     }
 
     public function register(Request $request) {
-        // return $request;
+   
         $rules = [
             'full_name' => ['required'],
             'password' => ['required', 'min:8'],
@@ -65,17 +65,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    // public function profilePicture() {
-    //   $user=Auth::user();
-      
-    //   if ($user->image) {
-    //     // Generate the full URL for the profile picture
-    //     $profilePictureUrl = Storage::url($user->image);
 
-    //     return response()->json(['profile_picture' => $profilePictureUrl]);
-    // } else {
-    //     return response()->json(['message' => 'Profile picture not found'], 404);
-    // }
 
-    }
+    
 }

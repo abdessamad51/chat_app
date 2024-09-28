@@ -19,8 +19,7 @@ class MessageController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-       return $user->messages;
+        return  Auth::user()->messages;
     
     }
 
@@ -49,16 +48,7 @@ class MessageController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+  
 
     /**
      * Update the specified resource in storage.
@@ -74,7 +64,9 @@ class MessageController extends Controller
             if(!$conversation)  {
                return response()->json(__('Message not found'), 404);  
             }  
-            $conversation->update($request->all());
+            $conversation->update([
+                'message' => $request->message
+            ]);
             DB::commit();
             return response()->json(__('Message updated'), 200);  
 
